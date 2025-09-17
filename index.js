@@ -2,34 +2,48 @@ let myleads = []
 const inputel = document.querySelector("#input-el")
 const inputbtn = document.querySelector("#input-btn")
 const dltbtn = document.querySelector("#dlt-btn")
+const tabbtn = document.querySelector("#tab-btn")
 const ulel = document.querySelector("#ulel")
 
 let leadsfromlocalstorage=JSON.parse(localStorage.getItem("myleads"))
 
 if (leadsfromlocalstorage){
     myleads=leadsfromlocalstorage
-    renderleads()
+    render(myleads)
 }
 
 inputbtn.addEventListener("click", function () {
     myleads.push(inputel.value)
     inputel.value = "" // optional: clear input after adding
     localStorage.setItem("myleads",JSON.stringify(myleads))
-    renderleads()
+    render(myleads)
 })
 
 dltbtn.addEventListener("dblclick", function () {
     localStorage.clear()
     myleads=[]
-    renderleads()
+    render(myleads)
     
 })
 
 
-function renderleads() {
+
+tabbtn.addEventListener("click", function () {
+    chrome.tabs.query({active:true,currentWindow:true}, function(tabs){
+         
+        
+        myleads.push(tabs[0].value)
+        localStorage.setItem("myleads",JSON.stringify(myleads))
+        render(myleads)
+    })
+    
+})
+
+
+function render(leads) {
     listitems=""
     // ulel.innerHTML = "" // clear old list before re-rendering
-    for (let i = 0; i < myleads.length; i++) {
+    for (let i = 0; i < leads.length; i++) {
         // const li = document.createElement("li")
         // li.textContent = myleads[i]
         // ulel.append(li)
